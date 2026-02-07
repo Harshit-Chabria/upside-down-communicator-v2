@@ -77,7 +77,7 @@ export function useSnapGesture(onSnap: () => void, enabled: boolean) {
 
             const hands = new Hands({
                 locateFile: (file) => {
-                    return `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}`;
+                    return `https://cdn.jsdelivr.net/npm/@mediapipe/hands@0.4.1675469240/${file}`;
                 }
             });
 
