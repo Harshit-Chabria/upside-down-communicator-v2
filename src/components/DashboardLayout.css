@@ -1,0 +1,107 @@
+/* Dashboard Layout Styling */
+
+.dashboard-layout {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Header Bar */
+.dashboard-header {
+    padding: 20px 30px;
+    border-bottom: 2px solid var(--phosphor-color);
+    background: rgba(10, 10, 10, 0.8);
+    box-shadow: 0 0 20px rgba(57, 255, 20, 0.2);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.dashboard-header-title {
+    font-size: 24px;
+    font-weight: bold;
+    letter-spacing: 2px;
+}
+
+/* Main Grid */
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: 380px 1fr;
+    gap: 20px;
+    padding: 20px;
+    flex: 1;
+    align-items: start;
+}
+
+.dashboard-left-panel {
+    position: sticky;
+    top: 100px;
+    max-height: calc(100vh - 120px);
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+/* Custom scrollbar for left panel */
+.dashboard-left-panel::-webkit-scrollbar {
+    width: 8px;
+}
+
+.dashboard-left-panel::-webkit-scrollbar-track {
+    background: rgba(57, 255, 20, 0.1);
+}
+
+.dashboard-left-panel::-webkit-scrollbar-thumb {
+    background: var(--phosphor-color);
+    box-shadow: 0 0 5px var(--phosphor-color);
+}
+
+.dashboard-right-panel {
+    min-height: 400px;
+}
+
+/* Footer Bar */
+.dashboard-footer {
+    padding: 15px 30px;
+    border-top: 2px solid var(--phosphor-color);
+    background: rgba(10, 10, 10, 0.8);
+    box-shadow: 0 0 20px rgba(57, 255, 20, 0.2);
+    text-align: center;
+}
+
+/* Responsive Design */
+@media (max-width: 968px) {
+    .dashboard-grid {
+        grid-template-columns: 1fr;
+        gap: 15px;
+        padding: 15px;
+    }
+
+    .dashboard-left-panel {
+        position: static;
+        max-height: none;
+    }
+
+    .dashboard-header {
+        padding: 15px 20px;
+    }
+
+    .dashboard-footer {
+        padding: 12px 20px;
+    }
+}
+
+@media (max-width: 640px) {
+    .dashboard-header-title {
+        font-size: 18px;
+    }
+
+    .dashboard-grid {
+        padding: 10px;
+        gap: 10px;
+    }
+}

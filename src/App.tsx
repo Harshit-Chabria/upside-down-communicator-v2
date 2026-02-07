@@ -4,18 +4,12 @@
 import { useState, useCallback, useEffect } from 'react';
 import { TerminalContainer } from './components/TerminalContainer';
 import { SanityGauge } from './components/SanityGauge';
-import { ModeSelector } from './components/ModeSelector';
+import { DashboardLayout } from './components/DashboardLayout';
+import { ControlPanel } from './components/ControlPanel';
+import { DisplayPanel } from './components/DisplayPanel';
 import type { TransmissionMode } from './components/ModeSelector';
-import { InputConsole } from './components/InputConsole';
-import { LightGrid } from './components/LightGrid';
-import { MorseLED } from './components/MorseLED';
-import { MorseDisplay } from './components/MorseDisplay';
-import { BinaryPattern } from './components/BinaryPattern';
-import { VisualModeSelector } from './components/VisualModeSelector';
 import type { VisualMode } from './components/VisualModeSelector';
-import { AudioModeSelector } from './components/AudioModeSelector';
 import type { AudioMode } from './components/AudioModeSelector';
-import { MusicalDisplay } from './components/MusicalDisplay';
 import { GestureIndicator } from './components/GestureIndicator';
 import { useSystemIntegrity } from './hooks/useSystemIntegrity';
 import { useKonamiCode } from './hooks/useKonamiCode';
@@ -176,84 +170,62 @@ function App() {
 
   return (
     <TerminalContainer isPossessed={isPossessed} isRecovering={isRecovering}>
-      <SanityGauge sanity={sanity} isPossessed={isPossessed} />
-
-      <ModeSelector
-        mode={mode}
-        onChange={setMode}
-        disabled={isPlaying}
-      />
-
-      {mode === 'visual' && (
-        <VisualModeSelector
-          mode={visualMode}
-          onChange={setVisualMode}
-          disabled={isPlaying}
-        />
-      )}
-
-      {mode === 'audio' && (
-        <AudioModeSelector
-          mode={audioMode}
-          onChange={setAudioMode}
-          disabled={isPlaying}
-        />
-      )}
-
-      <InputConsole
-        onSubmit={handleSubmit}
-        isPossessed={isPossessed}
-        disabled={isPlaying}
-      />
-
-      {message && (
-        <>
-          {mode === 'visual' ? (
-            visualMode === 'grid' ? (
-              <LightGrid
-                message={message}
-                isPlaying={isPlaying}
-                onComplete={handleTransmissionComplete}
-              />
-            ) : (
-              <BinaryPattern
-                message={message}
-                isPlaying={isPlaying}
-                onComplete={handleTransmissionComplete}
-              />
-            )
-          ) : (
-            audioMode === 'morse' ? (
-              <>
-                <MorseLED isActive={isMorseLEDActive} />
-                <MorseDisplay pattern={morsePattern} currentIndex={morseIndex} />
-              </>
-            ) : (
-              <MusicalDisplay
-                currentNote={currentMusicalNote}
-                currentChar={currentMusicalChar}
-                frequency={currentFrequency}
-              />
-            )
-          )}
-        </>
-      )}
-
-      {isPossessed && (
-        <div className="terminal-text" style={{
-          marginTop: '40px',
-          textAlign: 'center',
-          fontSize: '18px',
-          animation: 'flicker-fast 0.15s infinite'
-        }}>
-          ⚠ SYSTEM CORRUPTED - ENTER RECOVERY SEQUENCE ⚠
-        </div>
-      )}
-
-      <GestureIndicator
-        isTracking={isTracking}
-        error={gestureError}
-        isPossessed={isPossessed}
+      <DashboardLayout
+        header={
+          <>
+            <div className="dashboard-header-title terminal-text">
+              <span className="blink">█</span> UPSIDE DOWN COMMUNICATOR v1.983
+            </div>
+            <SanityGauge sanity={sanity} isPossessed={isPossessed} />
+          </>
+        }
+        leftPanel={
+          <ControlPanel
+            mode={mode}
+            visualMode={visualMode}
+            audioMode={audioMode}
+            onModeChange={setMode}
+            onVisualModeChange={setVisualMode}
+            onAudioModeChange={setAudioMode}
+            onSubmit={handleSubmit}
+            isPossessed={isPossessed}
+            disabled={isPlaying}
+          />
+        }
+        rightPanel={
+          <DisplayPanel
+            mode={mode}
+            visualMode={visualMode}
+            audioMode={audioMode}
+            message={message}
+            isPlaying={isPlaying}
+            onComplete={handleTransmissionComplete}
+            isMorseLEDActive={isMorseLEDActive}
+            morsePattern={morsePattern}
+            morseIndex={morseIndex}
+            currentMusicalNote={currentMusicalNote}
+            currentMusicalChar={currentMusicalChar}
+            currentFrequency={currentFrequency}
+          />
+        }
+        footer={
+          <>
+            {isPossessed && (
+              <div className="terminal-text" style={{
+                fontSize: '18px',
+                animation: 'flicker-fast 0.15s infinite',
+                marginBottom: '10px'
+              }}>
+                ⚠ SYSTEM CORRUPTED - ENTER RECOVERY SEQUENCE ⚠
+              </div>
+            )}
+            <GestureIndicator
+              isTracking={isTracking}
+              error={gestureError}
+              isPossessed={isPossessed}
+            />
+          </>
+        }
       />
     </TerminalContainer>
   );
