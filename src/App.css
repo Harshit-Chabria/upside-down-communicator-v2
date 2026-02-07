@@ -1,0 +1,52 @@
+/* Global CRT Design System */
+/* 1983 Terminal Aesthetic with Phosphor Glow */
+
+@import url('https://fonts.googleapis.com/css2?family=VT323&display=swap');
+
+:root {
+  /* Color Theme */
+  --phosphor-green: #39ff14;
+  --phosphor-color: #39ff14;
+  /* Alias for consistency */
+  --warning-yellow: #ffb000;
+  --danger-red: #ff3030;
+  --bg-color: #0a0a0a;
+  --glow-radius: 8px;
+  --scanline-intensity: 0.05;
+}
+
+/* Global Reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background: var(--bg-color);
+  color: var(--phosphor-color);
+  font-family: 'VT323', monospace;
+  overflow-x: hidden;
+}
+
+/* Terminal Text Global Style */
+.terminal-text {
+  color: var(--phosphor-color);
+  text-shadow:
+    0 0 5px var(--phosphor-color),
+    0 0 10px var(--phosphor-color),
+    0 0 20px var(--phosphor-color);
+  font-family: 'VT323', monospace;
+}
+
+/* No Modern UI - Strict Constraints */
+button {
+  border-radius: 0;
+  /* No rounded corners */
+}
+
+/* Selection Color */
+::selection {
+  background: var(--phosphor-color);
+  color: #000;
+}

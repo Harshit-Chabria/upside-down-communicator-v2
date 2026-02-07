@@ -1,0 +1,45 @@
+.visual-mode-selector {
+    margin: 10px 0;
+}
+
+.visual-mode-label {
+    font-size: 12px;
+    letter-spacing: 2px;
+    margin-bottom: 8px;
+    opacity: 0.8;
+}
+
+.visual-mode-buttons {
+    display: flex;
+    gap: 12px;
+}
+
+.visual-mode-button {
+    flex: 1;
+    padding: 8px 16px;
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid var(--phosphor-color);
+    color: var(--phosphor-color);
+    font-family: 'VT323', monospace;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    opacity: 0.6;
+}
+
+.visual-mode-button:hover:not(:disabled) {
+    opacity: 1;
+    box-shadow: 0 0 10px var(--phosphor-color);
+}
+
+.visual-mode-button.active {
+    background: rgba(57, 255, 20, 0.2);
+    opacity: 1;
+    font-weight: bold;
+    border-width: 2px;
+}
+
+.visual-mode-button:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+}

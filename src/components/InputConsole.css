@@ -1,0 +1,37 @@
+.input-console {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px;
+    background: rgba(0, 0, 0, 0.7);
+    border: 2px solid var(--phosphor-color);
+    margin: 20px 0;
+}
+
+.console-prompt {
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.console-input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    outline: none;
+    color: var(--phosphor-color);
+    font-family: 'VT323', monospace;
+    font-size: 20px;
+    text-shadow:
+        0 0 5px var(--phosphor-color),
+        0 0 10px var(--phosphor-color);
+}
+
+.console-input::placeholder {
+    color: var(--phosphor-color);
+    opacity: 0.3;
+}
+
+.console-input:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}

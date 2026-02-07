@@ -1,0 +1,54 @@
+.gesture-indicator {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 1001;
+    background: rgba(0, 0, 0, 0.9);
+    border: 2px solid var(--phosphor-color);
+    padding: 15px 25px;
+    animation: pulse-border 2s ease-in-out infinite;
+}
+
+@keyframes pulse-border {
+
+    0%,
+    100% {
+        border-color: var(--phosphor-color);
+        box-shadow: 0 0 10px var(--phosphor-color);
+    }
+
+    50% {
+        border-color: var(--warning-yellow);
+        box-shadow: 0 0 20px var(--warning-yellow);
+    }
+}
+
+.gesture-status {
+    font-size: 14px;
+    letter-spacing: 1px;
+}
+
+.gesture-active {
+    color: var(--phosphor-color);
+    animation: text-pulse 1s ease-in-out infinite;
+}
+
+@keyframes text-pulse {
+
+    0%,
+    100% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0.6;
+    }
+}
+
+.gesture-loading {
+    color: var(--warning-yellow);
+}
+
+.gesture-error {
+    color: var(--danger-red);
+}

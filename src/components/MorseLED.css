@@ -1,0 +1,30 @@
+.morse-led-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    padding: 40px;
+}
+
+.led-label {
+    font-size: 18px;
+    letter-spacing: 3px;
+}
+
+.morse-led {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: rgba(57, 255, 20, 0.1);
+    border: 3px solid var(--phosphor-green);
+    transition: all 0.05s ease;
+}
+
+.led-active {
+    background: var(--phosphor-green);
+    box-shadow:
+        0 0 30px var(--phosphor-green),
+        0 0 60px var(--phosphor-green),
+        0 0 90px var(--phosphor-green),
+        inset 0 0 20px rgba(255, 255, 255, 0.8);
+}
