@@ -2,6 +2,8 @@
 // Uses MediaPipe Hands to detect snap gestures for recovery
 
 import { useEffect, useRef, useCallback, useState } from 'react';
+import { Hands } from '@mediapipe/hands';
+import { Camera } from '@mediapipe/camera_utils';
 
 export function useSnapGesture(onSnap: () => void, enabled: boolean) {
     const videoRef = useRef<HTMLVideoElement | null>(null);
@@ -71,9 +73,7 @@ export function useSnapGesture(onSnap: () => void, enabled: boolean) {
             await video.play();
             videoRef.current = video;
 
-            // Dynamically import MediaPipe Hands
-            const { Hands } = await import('@mediapipe/hands');
-            const { Camera } = await import('@mediapipe/camera_utils');
+            // MediaPipe Hands (now using static imports to avoid base path issues)
 
             const hands = new Hands({
                 locateFile: (file) => {
