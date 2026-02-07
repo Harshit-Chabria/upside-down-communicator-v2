@@ -57,14 +57,64 @@ export function useSnapGesture(onSnap: () => void, enabled: boolean) {
         }
     }, [calculateDistance, onSnap]);
 
+    const checkBrowserSupport = useCallback((): { supported: boolean; reason?: string } => {
+        // Check for getUserMedia API
+        if (!navigator.mediaDevices?.getUserMedia) {
+            return { supported: false, reason: 'Camera API not supported by browser' };
+        }
+
+        // Check for WebAssembly (required by MediaPipe)
+        if (typeof WebAssembly === 'undefined') {
+            return { supported: false, reason: 'WebAssembly not supported by browser' };
+        }
+
+        // Check for problematic browsers
+        const ua = navigator.userAgent.toLowerCase();
+
+        // Safari has known MediaPipe compatibility issues
+        if (ua.includes('safari') && !ua.includes('chrome')) {
+            return {
+                supported: false,
+                reason: 'Safari has limited MediaPipe support - Use Chrome or Edge for best results'
+            };
+        }
+
+        // Very old Firefox versions may have issues
+        const firefoxMatch = ua.match(/firefox\/(\d+)/);
+        if (firefoxMatch && parseInt(firefoxMatch[1]) < 90) {
+            return {
+                supported: false,
+                reason: 'Firefox version too old - Please update to latest version'
+            };
+        }
+
+        return { supported: true };
+    }, []);
+
     const startHandTracking = useCallback(async () => {
         if (!enabled) return;
 
+        console.log('[GestureTracking] Starting initialization');
+        console.log('[GestureTracking] Browser:', navigator.userAgent);
+
+        // Check browser compatibility first
+        const browserCheck = checkBrowserSupport();
+        if (!browserCheck.supported) {
+            console.warn('[GestureTracking] Browser not supported:', browserCheck.reason);
+            setError(browserCheck.reason || 'Browser not supported');
+            setIsTracking(false);
+            return;
+        }
+
         try {
+            console.log('[GestureTracking] Requesting camera access...');
+
             // Request camera access
             const stream = await navigator.mediaDevices.getUserMedia({
                 video: { width: 640, height: 480 }
             });
+
+            console.log('[GestureTracking] Camera access granted');
 
             // Create video element
             const video = document.createElement('video');
@@ -73,11 +123,15 @@ export function useSnapGesture(onSnap: () => void, enabled: boolean) {
             await video.play();
             videoRef.current = video;
 
+            console.log('[GestureTracking] Loading MediaPipe...');
+
             // MediaPipe Hands (now using static imports to avoid base path issues)
 
             const hands = new Hands({
                 locateFile: (file) => {
-                    return `https://cdn.jsdelivr.net/npm/@mediapipe/hands@0.4.1675469240/${file}`;
+                    const url = `https://cdn.jsdelivr.net/npm/@mediapipe/hands@0.4.1675469240/${file}`;
+                    console.log('[GestureTracking] Loading MediaPipe file:', file);
+                    return url;
                 }
             });
 
@@ -103,15 +157,60 @@ export function useSnapGesture(onSnap: () => void, enabled: boolean) {
             });
 
             camera.start();
+
+            console.log('[GestureTracking] MediaPipe loaded successfully');
+            console.log('[GestureTracking] Hand tracking active');
+
             setIsTracking(true);
             setError(null);
 
         } catch (err) {
-            console.error('Hand tracking error:', err);
-            setError('Camera access denied or not available');
+            console.error('[GestureTracking] Error:', err);
+
+            let errorMessage = 'Hand tracking unavailable';
+
+            // Provide specific error messages based on error type
+            if (err instanceof DOMException) {
+                switch (err.name) {
+                    case 'NotAllowedError':
+                        errorMessage = 'Camera permission denied - Click allow in browser prompt';
+                        console.error('[GestureTracking] User denied camera permission');
+                        break;
+                    case 'NotFoundError':
+                        errorMessage = 'No camera detected on this device';
+                        console.error('[GestureTracking] No camera found');
+                        break;
+                    case 'NotReadableError':
+                        errorMessage = 'Camera in use by another application';
+                        console.error('[GestureTracking] Camera already in use');
+                        break;
+                    case 'OverconstrainedError':
+                        errorMessage = 'Camera does not support required settings';
+                        console.error('[GestureTracking] Camera constraints not supported');
+                        break;
+                    case 'SecurityError':
+                        errorMessage = 'Camera access blocked by security policy';
+                        console.error('[GestureTracking] Security error');
+                        break;
+                    default:
+                        errorMessage = `Camera error: ${err.message}`;
+                        console.error('[GestureTracking] Unknown DOMException:', err.name, err.message);
+                }
+            } else if (err instanceof Error) {
+                // MediaPipe loading errors
+                if (err.message.includes('fetch') || err.message.includes('network')) {
+                    errorMessage = 'Network error loading hand tracking - Check internet connection';
+                    console.error('[GestureTracking] Network error loading MediaPipe');
+                } else {
+                    errorMessage = `Error: ${err.message}`;
+                    console.error('[GestureTracking] Error:', err.message);
+                }
+            }
+
+            setError(errorMessage);
             setIsTracking(false);
         }
-    }, [enabled, detectPeaceSign]);
+    }, [enabled, detectPeaceSign, checkBrowserSupport]);
 
     const stopHandTracking = useCallback(() => {
         if (videoRef.current && videoRef.current.srcObject) {
